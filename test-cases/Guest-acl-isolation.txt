@@ -1,0 +1,66 @@
+Guest ACL Isolation (Extended ACL Validation)
+
+## Purpose
+Validate that the Extended ACL applied at the distribution layer
+restricts Guest VLAN (VLAN 40) traffic from accessing internal
+networks while allowing outbound access to the ISP network.
+
+---
+
+## Environment
+| Device | VLAN | Subnet | Role |
+|--------|------|--------|------|
+| Guest Laptop | 40 | 192.168.40.0/24 | Test source |
+| Machine PC | 20 | 192.168.20.0/24 | Internal resource |
+| Factory Server | 50 | 192.168.50.0/24 | Internal resource |
+| ISP File Server | External | 130.100.30.8/30 | Allowed destination |
+
+ACL Location: **Distribution switch (SVI VLAN 40, inbound)**
+
+---
+
+## Validation Method
+ICMP testing from the Guest laptop is used to confirm:
+- Denied access to all internal VLANs
+- Allowed access to external ISP resources
+
+---
+
+## Expected Results
+| Source | Destination | Result |
+|--------|-------------|--------|
+| VLAN 40 | VLAN 20 | BLOCKED |
+| VLAN 40 | VLAN 50 | BLOCKED |
+| VLAN 40 | ISP File Server | PASS |
+
+---
+
+## Test Steps
+1. Log into Guest laptop
+2. Verify DHCP address in 192.168.40.0/24
+3. Ping internal VLAN gateways (20, 50)
+4. Ping ISP file server (130.100.30.10)
+5. Capture screenshots
+
+---
+
+## Evidence
+
+<details>
+<summary>Click to view ping screenshots</summary>
+
+### VLAN 40 → VLAN 20 (BLOCKED)
+![Guest to VLAN20](screenshots/guest_to_vlan20.png)
+
+### VLAN 40 → VLAN 50 (BLOCKED)
+![Guest to VLAN50](screenshots/guest_to_vlan50.png)
+
+### VLAN 40 → ISP File Server (PASS)
+![Guest to ISP](screenshots/guest_to_isp.png)
+
+</details>
+
+---
+
+## Outcome
+**PASS** — ACL enforces segmentation and allows controlled internet access for Guest users.
