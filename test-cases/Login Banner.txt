@@ -1,0 +1,56 @@
+## Purpose
+Verify that all critical network devices display a security login banner
+notifying users of acceptable use and legal consequences of unauthorized access.
+
+---
+
+## Environment
+| Device | Role |
+|--------|------|
+| Core | Core Router |
+| Distro | Distribution Switch |
+| Switch3 | Factory Access Switch |
+
+Banner Type: **MOTD (Message of the Day)**  
+Access Methods: **Console and Remote (SSH)**
+
+---
+
+## Validation Method
+Administrative access is attempted on each device.  
+The appearance of the configured MOTD banner before authentication
+confirms successful enforcement.
+
+---
+
+## Expected Results
+| Device | Banner Displayed |
+|--------|------------------|
+| Core | PASS |
+| Distro | PASS |
+| Switch3 | PASS |
+
+---
+
+## Test Steps
+1. Console or SSH into Core device.
+2. Observe login banner.
+3. Repeat on Distro device.
+4. Repeat on Switch3.
+5. Capture login screen screenshots.
+
+---
+
+## Evidence
+
+
+
+### Core / Distro Device Banner
+![Core MOTD](screenshots/core__Distromotd.png)
+
+
+### Switch3 Banner
+![Switch3 MOTD](screenshots/switch3_motd.png)
+
+## Outcome
+**PASS** — Security warning banners are enforced across all critical network devices.
