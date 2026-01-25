@@ -1,0 +1,271 @@
+Device: Distro
+Role: Distribution Layer Switch
+Project: Secure Campus Network Design
+Author: Michael Owens
+Date: 2026-01-08
+
+Description: Distribution layer switch providing inter-VLAN routing (SVIs), DHCP services,
+and OSPF Area 0 connectivity to the core. Enforces Guest VLAN isolation through
+extended ACLs and acts as the primary aggregation point for all access-layer
+switches via 802.1Q trunks.
+___________________________________________
+
+Distro#sh run
+Building configuration...
+
+Current configuration : 5433 bytes
+!
+version 12.2(37)SE1
+service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname Distro
+!
+login block-for 120 attempts 3 within 60
+!
+no profinet
+enable secret 5 $1$mERr$YlCkLMcTYWwkF1Ccndtll.
+!
+!
+ip dhcp excluded-address 192.168.10.1
+ip dhcp excluded-address 192.168.20.1
+ip dhcp excluded-address 192.168.30.1
+ip dhcp excluded-address 192.168.40.1
+ip dhcp excluded-address 192.168.50.1
+ip dhcp excluded-address 192.168.50.2
+ip dhcp excluded-address 192.168.50.3
+ip dhcp excluded-address 192.168.40.2
+!
+ip dhcp pool Int_Data
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ dns-server 8.8.8.8
+ip dhcp pool Factory_Data
+ network 192.168.20.0 255.255.255.0
+ default-router 192.168.20.1
+ dns-server 8.8.8.8
+ip dhcp pool Voice
+ network 192.168.30.0 255.255.255.0
+ default-router 192.168.30.1
+ dns-server 8.8.8.8
+ip dhcp pool Guest
+ network 192.168.40.0 255.255.255.0
+ default-router 192.168.40.1
+ dns-server 8.8.8.8
+ip dhcp pool Int_server
+ network 192.168.50.0 255.255.255.0
+ default-router 192.168.50.1
+ dns-server 8.8.8.8
+!
+!
+ip routing
+!
+!
+!
+!
+username Cisco privilege 15 secret 5 $1$mERr$YlCkLMcTYWwkF1Ccndtll.
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip ssh authentication-retries 2
+ip ssh time-out 60
+no ip domain-lookup
+ip domain-name Lockheed.local
+!
+!
+spanning-tree mode pvst
+spanning-tree vlan 10,20,30,40,50,99 priority 24576
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Distro_ID
+ ip address 10.255.255.2 255.255.255.255
+!
+interface FastEthernet0/1
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,40,50,99
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface FastEthernet0/2
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,40,50,99
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface FastEthernet0/3
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,40,50,99
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface FastEthernet0/4
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,40,50,99
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface FastEthernet0/5
+ description TO_Switch1
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,40,50,99
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface FastEthernet0/6
+ description To_Switch1
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,40,50,99
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface FastEthernet0/7
+!
+interface FastEthernet0/8
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+!
+interface FastEthernet0/11
+!
+interface FastEthernet0/12
+!
+interface FastEthernet0/13
+!
+interface FastEthernet0/14
+!
+interface FastEthernet0/15
+!
+interface FastEthernet0/16
+!
+interface FastEthernet0/17
+!
+interface FastEthernet0/18
+!
+interface FastEthernet0/19
+!
+interface FastEthernet0/20
+!
+interface FastEthernet0/21
+!
+interface FastEthernet0/22
+!
+interface FastEthernet0/23
+!
+interface FastEthernet0/24
+!
+interface GigabitEthernet0/1
+ no switchport
+ ip address 130.100.30.6 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan10
+ description int_Data
+ mac-address 00d0.970a.9601
+ ip address 192.168.10.1 255.255.255.0
+!
+interface Vlan20
+ description Factory_Data
+ mac-address 00d0.970a.9602
+ ip address 192.168.20.1 255.255.255.0
+!
+interface Vlan30
+ description Voice
+ mac-address 00d0.970a.9603
+ ip address 192.168.30.1 255.255.255.0
+!
+interface Vlan40
+ description Guest
+ mac-address 00d0.970a.9604
+ ip address 192.168.40.1 255.255.255.0
+!
+interface Vlan50
+ description Int_server
+ mac-address 00d0.970a.9605
+ ip address 192.168.50.1 255.255.255.0
+!
+interface Vlan99
+ description MGMT
+ mac-address 00d0.970a.9606
+ ip address 192.168.99.1 255.255.255.0
+!
+router ospf 1
+ log-adjacency-changes
+ network 10.255.255.2 0.0.0.0 area 0
+ network 130.100.30.4 0.0.0.3 area 0
+ network 192.168.10.0 0.0.0.255 area 0
+ network 192.168.20.0 0.0.0.255 area 0
+ network 192.168.30.0 0.0.0.255 area 0
+ network 192.168.40.0 0.0.0.255 area 0
+ network 192.168.50.0 0.0.0.255 area 0
+ network 192.168.99.0 0.0.0.255 area 0
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 130.100.30.5 
+!
+ip flow-export version 9
+!
+!
+ip access-list extended sl_def_acl
+ deny tcp any any eq telnet
+ deny tcp any any eq www
+ deny tcp any any eq 22
+ permit tcp any any eq 22
+ip access-list extended Guest
+ permit udp 192.168.40.0 0.0.0.255 any eq bootps
+ permit udp any eq bootpc 192.168.40.0 0.0.0.255
+ permit ip 192.168.40.0 0.0.0.255 130.100.30.8 0.0.0.3
+ deny ip 192.168.40.0 0.0.0.255 192.168.10.0 0.0.0.255
+ deny ip 192.168.40.0 0.0.0.255 192.168.20.0 0.0.0.255
+ deny ip 192.168.40.0 0.0.0.255 192.168.30.0 0.0.0.255
+ deny ip 192.168.40.0 0.0.0.255 192.168.50.0 0.0.0.255
+ deny ip 192.168.40.0 0.0.0.255 192.168.99.0 0.0.0.255
+ deny ip 192.168.40.0 0.0.0.255 any
+ deny ip any any
+!
+banner motd ^CThis device is the property of Lockheed Martin. Any unauthorized access and actions on device prohibited. We will press charges to the fullest extent for any trust passers.^C
+!
+!
+!
+!
+!
+logging trap debugging
+logging 192.168.50.2
+line con 0
+ exec-timeout 15 0
+ logging synchronous
+ login local
+!
+line aux 0
+!
+line vty 0 4
+ logging synchronous
+ login local
+ transport input ssh
+!
+!
+!
+ntp server 130.100.30.10
+!
+end

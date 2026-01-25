@@ -1,0 +1,187 @@
+Device:  Switch2
+Role: Access Layer Switch
+Project: Secure Campus Network Design
+Author: Michael Owens
+Date: 2026-01-08
+
+Description: Access layer switch providing user and guest endpoint connectivity
+(VLAN 10 and VLAN 40) with port-security enforcement using sticky
+MAC addresses. Aggregates to the distribution layer via 802.1Q
+trunk uplinks and uses VLAN 99 for secure management access.
+___________________________________________________
+
+Switch2#sh run
+Building configuration...
+
+Current configuration : 3134 bytes
+!
+version 12.2(37)SE1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname Switch2
+!
+login block-for 120 attempts 3 within 60
+!
+no profinet
+enable secret 5 $1$mERr$YlCkLMcTYWwkF1Ccndtll.
+!
+!
+!
+!
+!
+!
+!
+!
+username Cisco privilege 15 secret 5 $1$mERr$YlCkLMcTYWwkF1Ccndtll.
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip ssh authentication-retries 2
+ip ssh time-out 60
+no ip domain-lookup
+ip domain-name Lockheed.local
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/1
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky 
+ switchport port-security violation restrict 
+ switchport port-security mac-address sticky 00E0.F911.14D6
+!
+interface FastEthernet0/2
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky 
+ switchport port-security violation restrict 
+ switchport port-security mac-address sticky 00D0.5896.4A17
+!
+interface FastEthernet0/3
+!
+interface FastEthernet0/4
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security maximum 3
+ switchport port-security mac-address sticky 
+ switchport port-security violation restrict 
+ switchport port-security mac-address sticky 00D0.9745.9601
+ switchport port-security mac-address sticky 00E0.F911.14D6
+!
+interface FastEthernet0/5
+ switchport access vlan 40
+ switchport mode access
+!
+interface FastEthernet0/6
+!
+interface FastEthernet0/7
+!
+interface FastEthernet0/8
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+!
+interface FastEthernet0/11
+!
+interface FastEthernet0/12
+!
+interface FastEthernet0/13
+!
+interface FastEthernet0/14
+!
+interface FastEthernet0/15
+!
+interface FastEthernet0/16
+!
+interface FastEthernet0/17
+!
+interface FastEthernet0/18
+!
+interface FastEthernet0/19
+!
+interface FastEthernet0/20
+!
+interface FastEthernet0/21
+!
+interface FastEthernet0/22
+!
+interface FastEthernet0/23
+!
+interface FastEthernet0/24
+!
+interface GigabitEthernet0/1
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,40,50,99
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface GigabitEthernet0/2
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,40,50,99
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan99
+ mac-address 00e0.a3bd.0d01
+ ip address 192.168.99.3 255.255.255.0
+!
+ip default-gateway 192.168.99.1
+ip classless
+!
+ip flow-export version 9
+!
+!
+ip access-list extended sl_def_acl
+ deny tcp any any eq telnet
+ deny tcp any any eq www
+ deny tcp any any eq 22
+ permit tcp any any eq 22
+!
+banner motd ^CThis device is the property of Lockheed Martin. Any unauthorized access and actions on device prohibited. We will press charges to the fullest extent for any trust passers.^C
+!
+!
+!
+!
+!
+logging 192.168.50.2
+line con 0
+ exec-timeout 15 0
+ logging synchronous
+ login local
+!
+line aux 0
+!
+line vty 0 4
+ logging synchronous
+ login local
+ transport input ssh
+!
+!
+!
+ntp server 130.100.30.10
+!
+end
