@@ -1,0 +1,83 @@
+# Layer 2 VLAN Segmentation & 802.1Q Trunking Validation
+
+## Purpose
+Verify that departmental and service-based traffic is segmented at Layer 2
+using VLANs, while 802.1Q trunk links allow tagged VLAN traffic to traverse
+between switches. Confirm that the distribution layer provides inter-VLAN
+routing.
+
+---
+
+## Environment
+| VLAN | Name | Purpose |
+|------|------|---------|
+| 10 | Int_Data | Internal Users |
+| 20 | Factory_Data | Factory Systems |
+| 30 | Voice | VoIP |
+| 40 | Guest | Guest Access |
+| 50 | Int_Server | Internal Servers |
+| 99 | MGMT | Network Management |
+
+Devices:
+- **Distro** – Inter-VLAN routing & trunk aggregation  
+- **Switch1, Switch2, Switch3** – Access switches  
+
+---
+
+## Validation Method
+VLAN configuration and trunk propagation are verified using switch
+show commands. A new endpoint is added to VLAN 20 to confirm that VLANs
+are propagated across the switching fabric.
+
+---
+
+## Expected Results
+| Check | Expected Result |
+|-------|-----------------|
+| VLANs present on Distro | PASS |
+| VLANs allowed on trunks | PASS |
+| Access ports in correct VLAN | PASS |
+| VLAN 20 reachable across switches | PASS |
+
+---
+
+## Test Steps
+
+### Distribution Switch
+1. Connect to device.
+2. Run:show ip interface brief
+show interfaces trunk
+show vlan brief
+show interfaces trunk
+
+
+### VLAN Propagation Test
+1. Add a new PC to Switch1.
+2. Assign the port to VLAN 20.
+3. Ping a VLAN 20 device on another switch.
+4. Capture screenshots.
+
+---
+
+## Evidence
+
+<details>
+<summary>Click to view VLAN and trunk verification</summary>
+
+### Distro – Trunk & SVI Validation
+![Distro VLANs](screenshots/distro_vlan_trunk.png)
+
+
+### Access Switch – VLAN Assignment
+![Access VLAN](screenshots/access_vlan_trunk.png)
+
+### VLAN 20 Connectivity Test
+![VLAN20 Ping](screenshots/vlan20_ping.png)
+
+</details>
+
+---
+
+## Outcome
+**PASS** — VLAN segmentation and trunking operate correctly across the
+switching infrastructure.
