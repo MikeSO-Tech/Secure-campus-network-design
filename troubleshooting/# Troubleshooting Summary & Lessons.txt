@@ -1,0 +1,99 @@
+# Troubleshooting Summary & Lessons Learned
+
+## Overview
+During the design and implementation of the Secure Campus Network,
+multiple configuration and integration issues were encountered and
+resolved using a structured, OSI-layered troubleshooting approach
+(Layers 1–4).
+
+Common diagnostic tools used:
+- `ping`
+- `show running-config`
+- `show ip interface brief`
+- `show ip route`
+- `ipconfig`
+
+Each issue below was identified, isolated, and corrected using
+methodical validation.
+
+---
+
+## Issue 1: Guest ACL Blocking External Access
+
+**Symptom:**  
+Guest VLAN devices could not reach the ISP file server.
+
+**Root Cause:**  
+The ACL referenced an incorrect destination network.
+
+**Resolution:**  
+Reviewed ACL entries, corrected source/destination subnets, and
+reapplied the policy.
+
+**Result:**  
+Guest devices regained external access while remaining isolated
+from internal networks.
+
+---
+
+## Issue 2: Wireless Router DHCP Conflict (WRT300N)
+
+**Symptom:**  
+Wireless clients received incorrect IP addresses and could not
+reach internal resources.
+
+**Root Causes:**
+- DHCP service enabled on WRT300N
+- Router connected via Internet port instead of Ethernet port
+
+**Resolutions:**
+- Disabled DHCP on the wireless router
+- Reconnected router using Ethernet interface
+
+**Result:**  
+Wireless devices received correct addresses from the network DHCP
+server and gained connectivity.
+
+---
+
+## Issue 3: NTP Synchronization Failure
+
+**Symptom:**  
+Only the Core router could synchronize with the external NTP server.
+
+**Root Cause:**  
+The ISP router lacked a return route to the internal network.
+
+**Resolution:**  
+Reviewed routing tables and added the missing route on the ISP router.
+
+**Result:**  
+All devices successfully synchronized time via NTP.
+
+---
+
+## Issue 4: DHCP Default Gateway Missing
+
+**Symptom:**  
+End devices could communicate locally but could not route beyond
+their subnet.
+
+**Root Cause:**  
+Missing `default-router` configuration in the DHCP pools.
+
+**Resolution:**  
+Added the correct gateway IP addresses to each DHCP pool.
+
+**Result:**  
+End devices could route traffic across VLANs and to the WAN.
+
+---
+
+## Conclusion
+These issues demonstrate the importance of:
+- Layered troubleshooting
+- Verification of routing and addressing
+- Reviewing control-plane dependencies (ACLs, NTP, DHCP, routing)
+
+Each failure strengthened the final design and improved overall
+network reliability.
