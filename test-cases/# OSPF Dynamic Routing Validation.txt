@@ -1,0 +1,54 @@
+# OSPF Dynamic Routing Validation
+
+## Purpose
+Verify that OSPF is correctly exchanging routing information between the
+Distribution and Core layers, enabling dynamic route updates, inter-VLAN
+connectivity, and upstream reachability.
+
+---
+
+## Environment
+| Device | Role |
+|--------|------|
+| Core | OSPF Area 0 Router |
+| Distro | OSPF Area 0 Router |
+
+Advertised Networks:
+- 192.168.10.0/24
+- 192.168.20.0/24
+- 192.168.30.0/24
+- 192.168.40.0/24
+- 192.168.50.0/24
+- 192.168.99.0/24
+
+---
+
+## Validation Method
+OSPF is verified by confirming neighbor adjacency, learned routes,
+and end-to-end connectivity using the following commands:
+
+show ip ospf neighbor
+show ip route ospf
+
+<details>
+<summary>Click to view OSPF verification</summary>
+
+### Core – OSPF Neighbors
+![Core OSPF Neighbor](screenshots/core_ospf_neighbor.png)
+
+### Core – OSPF Routes
+![Core OSPF Routes](screenshots/core_ospf_routes.png)
+
+### Distro – OSPF Neighbors
+![Distro OSPF Neighbor](screenshots/distro_ospf_neighbor.png)
+
+### Core – OSPF Routes
+![Distro OSPF Routes](screenshots/distro_ospf_routes.png)
+
+
+</details>
+
+---
+
+## Outcome
+**PASS** — Dynamic routing via OSPF is fully operational and stable.
