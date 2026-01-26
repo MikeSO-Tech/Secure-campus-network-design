@@ -1,0 +1,71 @@
+# DHCP vs Static Addressing Validation
+
+## Purpose
+Verify that all user endpoints receive dynamic IP addresses via DHCP,
+while critical servers use static IP addressing with correct gateway
+configuration.
+
+---
+
+## Environment
+| Device | VLAN | Addressing |
+|--------|------|------------|
+| Internal File Server | 50 | Static |
+| Factory Machine Server | 50 | Static |
+| Laptop1 | 40 | DHCP |
+| Internal2 | 10 | DHCP |
+| Machine Interface | 20 | DHCP |
+
+---
+
+## Validation Method
+Each device’s IP configuration is verified through the OS network settings
+to confirm correct DHCP or static assignment and default gateway.
+
+---
+
+## Expected Results
+| Device | Address Type | Result |
+|--------|-------------|--------|
+| Laptop1 (VLAN 40) | DHCP | PASS |
+| Internal2 (VLAN 10) | DHCP | PASS |
+| Machine Interface (VLAN 20) | DHCP | PASS |
+| File Server (VLAN 50) | Static | PASS |
+| Factory Server (VLAN 50) | Static | PASS |
+
+---
+
+## Test Steps
+1. Power on all devices.
+2. Open network settings.
+3. Verify:
+   - VLAN 10/20/40 → DHCP
+   - VLAN 50 servers → Static IP
+4. Confirm default gateway is correct.
+5. Capture screenshots.
+
+---
+
+## Evidence
+
+<details>
+<summary>Click to view IP configuration screenshots</summary>
+
+### Laptop1 (Distro_DHCP_config )
+![Distro Config DHCP](screenshots/Distro_dhcp.png)
+
+### Internal2 (VLAN 10 – DHCP)
+![Internal DHCP](screenshots/internal_vlan10_dhcp.png)
+
+### Machine Interface (VLAN 20 – DHCP)
+![Machine DHCP](screenshots/machine_vlan20_dhcp.png)
+
+### Factory Server (VLAN 50 – Static)
+![Factory Static](screenshots/factory_fileserver_static.png)
+
+
+
+---
+
+## Outcome
+**PASS** — Addressing strategy is correctly enforced across the network.
