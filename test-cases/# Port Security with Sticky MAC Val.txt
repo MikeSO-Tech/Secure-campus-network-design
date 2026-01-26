@@ -1,0 +1,69 @@
+# Port Security with Sticky MAC Validation
+
+## Purpose
+Verify that switch port security using sticky MAC addresses prevents
+unauthorized devices from accessing the network by restricting each
+access port to approved endpoints.
+
+---
+
+## Environment
+| Device | VLAN | Role |
+|--------|------|------|
+| Switch1 | 50 | Server Access |
+| Switch2 | 10 | User Access |
+| Switch3 | 20 | Factory Access |
+
+Security Mode: **Port Security (Sticky MAC, Restrict/Shutdown)**
+
+---
+
+## Validation Method
+Port security behavior is verified by:
+1. Allowing a valid device to connect and be learned.
+2. Replacing it with an unauthorized device.
+3. Observing the resulting security violation and port state.
+
+---
+
+## Expected Results
+| Action | Result |
+|--------|--------|
+| Authorized device connects | PASS |
+| Unauthorized device connects | Port violation |
+| Port state | Restrict / Shutdown |
+| Log generated | PASS |
+
+---
+
+## Test Steps
+1. Connect authorized device to secured port.
+2. Verify learned MAC:
+	show port-security interface fa0/1
+3. Disconnect authorized device.
+4. Connect unauthorized device.
+5. Verify violation:
+	show port-security interface fa0/1
+
+6. Capture screenshots.
+
+---
+
+## Evidence
+
+<details>
+<summary>Click to view port-security enforcement</summary>
+
+### Sticy MAC configuration
+![Sticky MAC](screenshots/sticky_mac_config.png)
+
+### Violation Detected
+![Violation](screenshots/port_violation.png)
+
+
+</details>
+
+---
+
+## Outcome
+**PASS** — Port security successfully blocks unauthorized endpoints.
