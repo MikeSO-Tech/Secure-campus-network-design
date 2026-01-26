@@ -1,0 +1,73 @@
+Layer 2 Redundancy & Spanning Tree Validation (802.1w)
+
+## Purpose
+Verify that Spanning Tree Protocol is correctly implemented to provide
+Layer 2 redundancy while preventing switching loops and broadcast storms.
+Confirm that the Distribution switch is elected as the root bridge.
+
+---
+
+## Environment
+| Device | Role |
+|--------|------|
+| Distro | Root Bridge (All VLANs) |
+| Switch1 | Access Switch |
+| Switch2 | Access Switch |
+| Switch3 | Access Switch |
+
+STP Mode: **PVST (802.1w/Rapid STP)**  
+Root Bridge: **Distro**
+
+---
+
+## Validation Method
+Spanning Tree status is verified using `show spanning-tree` on all
+switches to confirm:
+- Root bridge election
+- Port roles (Root, Designated, Alternate)
+- Redundant path blocking
+
+---
+
+## Expected Results
+| Device | Root Bridge | Redundant Links |
+|--------|-------------|-----------------|
+| Distro | SELF | N/A |
+| Switch1 | Distro | One blocked |
+| Switch2 | Distro | One blocked |
+| Switch3 | Distro | One blocked |
+
+---
+
+## Test Steps
+1. Access Distro and verify root bridge status:
+2. Access each access switch and verify:
+- Root bridge = Distro
+- One redundant port in blocking/alternate state
+3. Capture screenshots.
+
+---
+
+## Evidence
+
+<details>
+<summary>Click to view spanning-tree verification</summary>
+
+### Distro – Root Bridge
+![Distro STP](screenshots/distro_stp.png)
+
+### Switch1 – Alternate Port Blocked
+![Switch1 STP](screenshots/switch1_stp.png)
+
+### Switch2 – Alternate Port Blocked
+![Switch2 STP](screenshots/switch2_stp.png)
+
+### Switch3 – Alternate Port Blocked
+![Switch3 STP](screenshots/switch3_stp.png)
+
+</details>
+
+---
+
+## Outcome
+**PASS** — STP successfully provides redundancy and prevents Layer 2 loops.
